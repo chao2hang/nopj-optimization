@@ -12,14 +12,15 @@
 
 ## 🛠 安装与启用
 
-1. **链接插件**: 确保该插件位于 `packages/nopj-optimization` 目录下，并已在主项目的 `composer.json` 中配置：
-   ```json
-   "require": {
-       "nopj/optimization": "@dev"
-   }
-   ```
-2. **更新依赖**: 运行 `composer update nopj/optimization`。
-3. **后台启用**: 登录 Flarum 管理后台，在扩展列表中找到 **Nopj Optimization** 并启用。
+你可以直接通过 Composer 安装：
+
+```bash
+composer require nopj/optimization
+```
+
+如果是本地开发调试，也可以在主项目的 `composer.json` 中配置路径映射后引入。
+
+安装完成后，登录 Flarum 管理后台，在扩展列表中找到 **Nopj Optimization** 并启用。
 
 ## 📊 性能看板
 
