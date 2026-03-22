@@ -18,13 +18,34 @@ class BenchmarkController implements RequestHandlerInterface
         // 获取当前论坛的根路径
         $baseUrl = (string) $request->getUri()->withPath('/')->withQuery('')->withFragment('');
 
-        // 进行对比测试
+        // 预热请求（让 Flarum 完成 Less 编译和缓存初始化）
+        $this->measure($baseUrl, false);
+
+        // 进行对比测试，每个跑 3 次取平均值，排除偶发干扰
         $results = [
-            'optimized' => $this->measure($baseUrl, false),
-            'original' => $this->measure($baseUrl, true),
+            'optimized' => $this->measureAverage($baseUrl, false),
+            'original' => $this->measureAverage($baseUrl, true),
         ];
 
         return new JsonResponse($results);
+    }
+
+    protected function measureAverage(string $url, bool $skipOptimization): array
+    {
+        $iterations = 3;
+        $totalTime = 0;
+        $lastResult = [];
+
+        for ($i = 0; $i < $iterations; $i++) {
+            $lastResult = $this->measure($url, $skipOptimization);
+            $totalTime += $lastResult['time_ms'];
+            // 稍作停顿
+            usleep(100000); 
+        }
+
+        $lastResult['time_ms'] = round($totalTime / $iterations, 2);
+        
+        return $lastResult;
     }
 
     protected function measure(string $url, bool $skipOptimization): array
