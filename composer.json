@@ -1,0 +1,24 @@
+{
+    "name": "nopj/optimization",
+    "description": "Flarum optimization extension.",
+    "type": "flarum-extension",
+    "require": {
+        "flarum/core": "^1.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Nopj\\Optimization\\": "src/"
+        }
+    },
+    "extra": {
+        "flarum-extension": {
+            "title": "Nopj Optimization",
+            "icon": {
+                "name": "fas fa-rocket",
+                "backgroundColor": "#2ecc71",
+                "color": "#fff"
+            }
+        }
+    }
+}
