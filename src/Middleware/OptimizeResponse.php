@@ -12,6 +12,16 @@ class OptimizeResponse implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $start = defined('FLARUM_START') ? FLARUM_START : microtime(true);
+        $dbStart = microtime(true);
+        
+        // 尝试获取数据库连接以监控耗时 (Flarum 1.x 容器注入)
+        $dbDuration = 0;
+        try {
+            $db = resolve('db');
+            $db->listen(function ($query) use (&$dbDuration) {
+                $dbDuration += $query->time;
+            });
+        } catch (\Exception $e) {}
 
         // 允许通过 Header 绕过优化，用于对比测试
         if ($request->getHeaderLine('X-Skip-Optimization') === '1') {
@@ -51,7 +61,8 @@ class OptimizeResponse implements MiddlewareInterface
 
         // 性能优化：移除冗余响应头
         $response = $response->withoutHeader('X-Powered-By')
-                             ->withAddedHeader('X-Backend-Time', round((microtime(true) - $start) * 1000, 2) . 'ms');
+                             ->withAddedHeader('X-Backend-Time', round((microtime(true) - $start) * 1000, 2) . 'ms')
+                             ->withAddedHeader('X-DB-Queries', $dbDuration > 0 ? 'Logged' : 'No queries tracked');
 
         return $response;
     }
