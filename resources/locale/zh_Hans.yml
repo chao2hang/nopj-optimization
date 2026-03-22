@@ -1,0 +1,5 @@
+core:
+  views:
+    content:
+      load_error_message: " "
+      javascript_disabled_message: " "

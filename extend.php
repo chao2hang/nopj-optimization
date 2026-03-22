@@ -22,6 +22,8 @@ return [
             $document->head[] = '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
         }),
 
+    (new Extend\Locales(__DIR__.'/resources/locale')),
+
     (new Extend\Middleware('forum'))
         ->add(Middleware\OptimizeResponse::class),
 
